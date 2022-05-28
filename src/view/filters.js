@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import { createElement } from '../render';
 
 const createFiltersTemplate = () => `<nav class="main-navigation">
 <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
