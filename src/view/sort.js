@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import { createElement } from '../render';
 
 const createSortTemplate = () => `<ul class="sort">
 <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
