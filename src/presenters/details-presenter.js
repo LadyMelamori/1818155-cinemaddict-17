@@ -5,19 +5,29 @@ import FilmDetailsCommentView from '../view/film-details-comment';
 import { render, RenderPosition } from '../render';
 
 export default class DetailsPresenter {
-  filmDetailsComponent = new FilmDetailsView();
+  #detailsContainer = null;
+  #filmsModel = null;
+  #commentsModel = null;
+
+  #films = [];
+  #comments = [];
+
+  #filmDetailsComponent = new FilmDetailsView();
 
   init = (detailsContainer, filmsModel, commentsModel) => {
-    this.detailsContainer = detailsContainer;
-    this.films = [...filmsModel.getFilms()];
-    this.comments = [...commentsModel.getComments()];
+    this.#detailsContainer = detailsContainer;
+    this.#filmsModel = filmsModel;
+    this.#commentsModel = commentsModel;
 
-    const film = this.films[0];
-    const filmComments = this.comments.filter((x) => x.filmId === film.id);
+    this.#films = [...this.#filmsModel.films];
+    this.#comments = [...this.#commentsModel.comments];
 
-    render(this.filmDetailsComponent, this.detailsContainer, RenderPosition.AFTEREND);
+    const film = this.#films[0];
+    const filmComments = this.#comments.filter((x) => x.filmId === film.id);
 
-    const detailsInnerContainer = this.filmDetailsComponent.getElement().querySelector('.film-details__inner');
+    render(this.#filmDetailsComponent, this.#detailsContainer, RenderPosition.AFTEREND);
+
+    const detailsInnerContainer = this.#filmDetailsComponent.element.querySelector('.film-details__inner');
 
     render(new FilmDetailsInfoView(film), detailsInnerContainer);
 
@@ -25,7 +35,7 @@ export default class DetailsPresenter {
 
     render(commentListComponent, detailsInnerContainer);
 
-    const commentsContainer = commentListComponent.getElement().querySelector('.film-details__comments-list');
+    const commentsContainer = commentListComponent.element.querySelector('.film-details__comments-list');
 
     for (let i = 0; i < filmComments.length; i++) {
       render(new FilmDetailsCommentView(filmComments[i]), commentsContainer);

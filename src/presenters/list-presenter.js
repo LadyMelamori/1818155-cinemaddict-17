@@ -7,27 +7,37 @@ import SortView from '../view/sort';
 import { render}  from '../render';
 
 export default class ListPresenter {
-  filmsComponent = new FilmsView();
-  filmListComponent = new FilmListView();
+  #filmsContainer = null;
+  #filmsModel = null;
+  #commentsModel = null;
+
+  #films = [];
+  #comments = [];
+
+  #filmsComponent = new FilmsView();
+  #filmListComponent = new FilmListView();
 
   init = (filmsContainer, filmsModel, commentsModel) => {
-    this.filmsContainer = filmsContainer;
-    this.films = [...filmsModel.getFilms()];
-    this.comments = [...commentsModel.getComments()];
+    this.#filmsContainer = filmsContainer;
+    this.#filmsModel = filmsModel;
+    this.#commentsModel = commentsModel;
 
-    render(new FiltersView(), this.filmsContainer);
-    render(new SortView(), this.filmsContainer);
-    render(this.filmsComponent, this.filmsContainer);
-    render(this.filmListComponent, this.filmsComponent.getElement());
+    this.#films = [...this.#filmsModel.films];
+    this.#comments = [...this.#commentsModel.comments];
 
-    const cardsContainer = this.filmListComponent.getElement().querySelector('.films-list__container');
+    render(new FiltersView(), this.#filmsContainer);
+    render(new SortView(), this.#filmsContainer);
+    render(this.#filmsComponent, this.#filmsContainer);
+    render(this.#filmListComponent, this.#filmsComponent.element);
 
-    for (let i = 0; i < this.films.length; i++) {
-      const film = this.films[i];
-      const filmComments = this.comments.filter((x) => x.filmId === film.id);
+    const cardsContainer = this.#filmListComponent.element.querySelector('.films-list__container');
+
+    for (let i = 0; i < this.#films.length; i++) {
+      const film = this.#films[i];
+      const filmComments = this.#comments.filter((x) => x.filmId === film.id);
       render(new FilmCardView(film, filmComments), cardsContainer);
     }
 
-    render(new ShowMoreButtonView(), this.filmListComponent.getElement());
+    render(new ShowMoreButtonView(), this.#filmListComponent.element);
   };
 }

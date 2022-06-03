@@ -1,3 +1,1 @@
-const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
-
-export { EMOTIONS };
+export const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];

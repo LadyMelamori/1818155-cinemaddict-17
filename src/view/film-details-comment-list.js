@@ -43,23 +43,26 @@ const createFilmDetailsCommentListTemplate = (comments) => `<div class="film-det
   </div>`;
 
 export default class FilmDetailsCommentListView {
+  #element = null;
+  #comments = null;
+
   constructor(comments) {
-    this.comments = comments;
+    this.#comments = comments;
   }
 
-  getTemplate() {
-    return createFilmDetailsCommentListTemplate(this.comments);
+  get template() {
+    return createFilmDetailsCommentListTemplate(this.#comments);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
