@@ -1,7 +1,7 @@
 import { createElement } from '../render';
 import { getDateYear, humanizeRuntime, shortenDescription } from '../utils';
 
-const createFilmCardTemplate = (film, comments) => `<article class="film-card">
+const createFilmCardTemplate = (film, comments) => `<article class="film-card" data-film-id=${film.id}>
 <a class="film-card__link">
   <h3 class="film-card__title">${film.title}</h3>
   <p class="film-card__rating">${film.totalRating}</p>
