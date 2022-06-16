@@ -1,7 +1,7 @@
 import { createElement } from '../render';
 import { getDateYear, humanizeRuntime, shortenDescription } from '../utils';
 
-const createFilmCardTemplate = (film, comments) => `<article class="film-card">
+const createFilmCardTemplate = (film, comments) => `<article class="film-card" data-film-id=${film.id}>
 <a class="film-card__link">
   <h3 class="film-card__title">${film.title}</h3>
   <p class="film-card__rating">${film.totalRating}</p>
@@ -22,24 +22,28 @@ const createFilmCardTemplate = (film, comments) => `<article class="film-card">
 </article>`;
 
 export default class FilmCardView {
+  #element = null;
+  #film = null;
+  #comments = null;
+
   constructor(film, comments) {
-    this.film = film;
-    this.comments = comments;
+    this.#film = film;
+    this.#comments = comments;
   }
 
-  getTemplate() {
-    return createFilmCardTemplate(this.film, this.comments);
+  get template() {
+    return createFilmCardTemplate(this.#film, this.#comments);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
