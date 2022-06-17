@@ -10,6 +10,8 @@ import FilmDetailsCommentListView from '../view/film-details-comment-list';
 import FilmDetailsCommentView from '../view/film-details-comment';
 import { render, RenderPosition }  from '../render';
 
+const FILM_COUNT_PER_STEP = 5;
+
 export default class Presenter {
   #filmsContainer = null;
   #detailsContainer = null;
@@ -17,11 +19,14 @@ export default class Presenter {
   #commentsModel = null;
 
   #films = [];
+  #renderedFilmCount = FILM_COUNT_PER_STEP;
   #comments = [];
 
   #filmsComponent = new FilmsView();
   #filmListComponent = new FilmListView();
   #filmDetailsComponent = null;
+
+  #showMoreButtonComponent = new ShowMoreButtonView();
 
   init = (filmsContainer, detailsContainer, filmsModel, commentsModel) => {
     this.#filmsContainer = filmsContainer;
@@ -39,7 +44,26 @@ export default class Presenter {
 
     this.#renderFilmCards();
 
-    render(new ShowMoreButtonView(), this.#filmListComponent.element);
+    if (this.#films.length > FILM_COUNT_PER_STEP) {
+      render(this.#showMoreButtonComponent, this.#filmListComponent.element);
+
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#handleShowMoreButtonClick);
+    }
+  };
+
+  #handleShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+
+    this.#films
+      .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP)
+      .forEach((film) => this.#renderFilmCard(film));
+
+    this.#renderedFilmCount += FILM_COUNT_PER_STEP;
+
+    if (this.#renderedFilmCount >= this.#films.length) {
+      this.#showMoreButtonComponent.element.remove();
+      this.#showMoreButtonComponent.removeElement();
+    }
   };
 
   #renderFilmDetailsComponent = (film) => {
@@ -67,14 +91,18 @@ export default class Presenter {
     this.#filmDetailsComponent = null;
   };
 
-  #renderFilmCards = () => {
+  #renderFilmCard = (film) => {
     const cardsContainer = this.#filmListComponent.element.querySelector('.films-list__container');
 
-    for (let i = 0; i < this.#films.length; i++) {
+    const filmComments = this.#comments.filter((x) => x.filmId === film.id);
+    const cardComponent = new FilmCardView(film, filmComments);
+    render(cardComponent, cardsContainer);
+  };
+
+  #renderFilmCards = () => {
+    for (let i = 0; i < Math.min(this.#films.length, FILM_COUNT_PER_STEP); i++) {
       const film = this.#films[i];
-      const filmComments = this.#comments.filter((x) => x.filmId === film.id);
-      const cardComponent = new FilmCardView(film, filmComments);
-      render(cardComponent, cardsContainer);
+      this.#renderFilmCard(film);
     }
 
     const showPopup = (film) => {
@@ -98,6 +126,8 @@ export default class Presenter {
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
+
+    const cardsContainer = this.#filmListComponent.element.querySelector('.films-list__container');
 
     cardsContainer.addEventListener('click', (evt) => {
       const cardElement = evt.target.closest('.film-card');
