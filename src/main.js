@@ -9,11 +9,11 @@ const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 const siteFooterStatElement = siteFooterElement.querySelector('.footer__statistics');
-const presenter = new Presenter();
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
+const presenter = new Presenter(siteMainElement, siteFooterElement, filmsModel, commentsModel);
 
 render(new UserRankView(), siteHeaderElement);
 render(new FilmCountView(), siteFooterStatElement);
 
-presenter.init(siteMainElement, siteFooterElement, filmsModel, commentsModel);
+presenter.init();
