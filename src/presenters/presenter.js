@@ -1,5 +1,8 @@
 import FilmCardView from '../view/film-card';
 import FilmListView from '../view/film-list';
+import FilmListHeaderView from '../view/film-list-header';
+import FilmListContainerView from '../view/film-list-container';
+import NoFilmView from '../view/no-film';
 import FilmsView from '../view/films';
 import FiltersView from '../view/filters';
 import ShowMoreButtonView from '../view/show-more-button';
@@ -38,16 +41,26 @@ export default class Presenter {
     this.#comments = [...this.#commentsModel.comments];
 
     render(new FiltersView(), this.#filmsContainer);
-    render(new SortView(), this.#filmsContainer);
+
+    if (this.#films.length) {
+      render(new SortView(), this.#filmsContainer);
+    }
+
     render(this.#filmsComponent, this.#filmsContainer);
     render(this.#filmListComponent, this.#filmsComponent.element);
+    if (this.#films.length) {
+      render(new FilmListHeaderView(), this.#filmListComponent.element);
+      render(new FilmListContainerView(), this.#filmListComponent.element);
 
-    this.#renderFilmCards();
+      this.#renderFilmCards();
 
-    if (this.#films.length > FILM_COUNT_PER_STEP) {
-      render(this.#showMoreButtonComponent, this.#filmListComponent.element);
+      if (this.#films.length > FILM_COUNT_PER_STEP) {
+        render(this.#showMoreButtonComponent, this.#filmListComponent.element);
 
-      this.#showMoreButtonComponent.element.addEventListener('click', this.#handleShowMoreButtonClick);
+        this.#showMoreButtonComponent.element.addEventListener('click', this.#handleShowMoreButtonClick);
+      }
+    } else {
+      render(new NoFilmView(), this.#filmListComponent.element);
     }
   };
 
